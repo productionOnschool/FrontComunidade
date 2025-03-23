@@ -1,17 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-  	<title>Angolan community in Washington state</title>
+<head>
+    <title>Angolan Community in Washington State</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
-
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	
-	<link rel="stylesheet" href="css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
     <style>
         body {
             background-image: url('assets/luanda.jpg');
@@ -23,304 +19,481 @@
             margin: 0;
             padding: 0;
         }
-        .contact-wrap {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
+        .contact-wrap { 
+            background: rgba(255, 255, 255, 0.9); 
+            border-radius: 10px; 
+            margin-right: 2px;
         }
-        .info-wrap {
-            background: rgba(0, 123, 255, 0.9) !important;
-            border-radius: 10px;
+        .info-wrap { 
+            background: rgba(0, 123, 255, 0.9) !important; 
+            border-radius: 10px; 
+            margin-left: 2px;
+        }
+        .is-invalid { border-color: #dc3545; }
+        .text-danger { font-size: 0.9em; min-height: 1.2em; }
+        .form-group { 
+            position: relative; 
+            margin-bottom: 1.5rem;
+        }
+        .form-group .text-danger { 
+            position: absolute; 
+            bottom: -1.2em;
+            left: 0;
+            width: 100%;
+        }
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .btn-loading:after {
+            content: '';
+            display: inline-block;
+            width: 1.2em;
+            height: 1.2em;
+            margin-left: 0.5em;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 767px) {
+            .contact-wrap, .info-wrap {
+                margin: 0;
+                border-radius: 0;
+            }
+            .wrapper .row.no-gutters {
+                flex-direction: column-reverse;
+            }
+            .col-lg-8, .col-lg-4, .col-md-7, .col-md-5 {
+                width: 100%;
+                max-width: 100%;
+            }
+            .contact-wrap {
+                padding: 15px;
+            }
+            .info-wrap {
+                padding: 15px;
+            }
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            .btn.btn-primary {
+                width: 100%;
+            }
         }
     </style>
+</head>
+<body>
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="wrapper">
+                    <div class="row no-gutters">
+                        <div class="col-lg-8 col-md-7 order-md-last d-flex align-items-stretch">
+                            <div class="contact-wrap w-100 p-md-5 p-4">
+                                <h3 class="mb-4">Angolan Community in Washington</h3>
+                                <div id="form-message-warning" class="mb-4"></div> 
+                                <div id="form-message-success" class="mb-4" style="display: none;">
+                                    Your message was sent, thank you!
+                                </div>
+                                <form method="POST" id="RegistroForm" name="RegistroForm" class="RegistroForm">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="label" for="name">Nome Completo</label>
+                                                <input type="text" class="form-control" name="name" id="name" placeholder="Name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6"> 
+                                            <div class="form-group">
+                                                <label class="label" for="email">Email Address</label>
+                                                <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="label" for="birthday">Data de Nascimento</label>
+                                                <input type="date" class="form-control" name="birthday" id="birthday">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="label" for="telemovel">Numero de Telemovel</label>
+                                                <input type="text" class="form-control" name="telemovel" id="telemovel" placeholder="206-###-####">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="label" for="state">Estado</label>
+                                                <select class="form-control" name="state" id="state">
+                                                    <option value="Washington">Washington</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="label" for="city">Cidade</label>
+                                                <select class="form-control" name="city" id="city">
+                                                    <option value="">Select City</option>
+                                                    <option value="Seattle">Seattle</option>
+                                                    <option value="Spokane">Spokane</option>
+                                                    <option value="Tacoma">Tacoma</option>
+                                                    <option value="Vancouver">Vancouver</option>
+                                                    <option value="Bellevue">Bellevue</option>
+                                                    <option value="Kent">Kent</option>
+                                                    <option value="Everett">Everett</option>
+                                                    <option value="Renton">Renton</option>
+                                                    <option value="Yakima">Yakima</option>
+                                                    <option value="Federal Way">Federal Way</option>
+                                                    <option value="Spokane Valley">Spokane Valley</option>
+                                                    <option value="Bellingham">Bellingham</option>
+                                                    <option value="Kennewick">Kennewick</option>
+                                                    <option value="Auburn">Auburn</option>
+                                                    <option value="Pasco">Pasco</option>
+                                                    <option value="Marysville">Marysville</option>
+                                                    <option value="Lakewood">Lakewood</option>
+                                                    <option value="Redmond">Redmond</option>
+                                                    <option value="Shoreline">Shoreline</option>
+                                                    <option value="Richland">Richland</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="label" for="gender">Gênero</label>
+                                                <select class="form-control" name="gender" id="gender">
+                                                    <option value="">Selecione o Gênero</option>
+                                                    <option value="Masculino">Masculino</option>
+                                                    <option value="Feminino">Feminino</option>
+                                                    <option value="Outro">Outro</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="label" for="civil_status">Estado Civil</label>
+                                                <select class="form-control" name="civil_status" id="civil_status">
+                                                    <option value="">Selecione o Estado Civil</option>
+                                                    <option value="Solteiro(a)">Solteiro(a)</option>
+                                                    <option value="Casado(a)">Casado(a)</option>
+                                                    <option value="Divorciado(a)">Divorciado(a)</option>
+                                                    <option value="Viúvo(a)">Viúvo(a)</option>
+                                                    <option value="Outro">Outro</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <input type="submit" value="Send Message" class="btn btn-primary" id="submitBtn">
+                                                <div class="submitting"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-5 d-flex align-items-stretch">
+                            <div class="info-wrap bg-primary w-100 p-md-5 p-4">
+                                <h3>Contato</h3>
+                                <p class="mb-4">Estamos abertos para qualquer sugestão ou apenas para uma conversa</p>
+                                <div class="dbox w-100 d-flex align-items-start">
+                                    <div class="icon d-flex align-items-center justify-content-center">
+                                        <span class="fa fa-map-marker"></span>
+                                    </div>
+                                    <div class="text pl-3">
+                                        <p><span>Endereço:</span> 13118 SE 228th Pl Kent WA 98031</p>
+                                    </div>
+                                </div>
+                                <div class="dbox w-100 d-flex align-items-center">
+                                    <div class="icon d-flex align-items-center justify-content-center">
+                                        <span class="fa fa-phone"></span>
+                                    </div>
+                                    <div class="text pl-3">
+                                        <p><span>Telefone:</span> <a href="tel://12063832188">+1(206) 383-2188</a></p>
+                                    </div>
+                                </div>
+                                <div class="dbox w-100 d-flex align-items-center">
+                                    <div class="icon d-flex align-items-center justify-content-center">
+                                        <span class="fa fa-paper-plane"></span>
+                                    </div>
+                                    <div class="text pl-3">
+                                        <p><span>Email:</span> <a href="mailto:info@angolancommunity.org">Info@angolancommunity.org</a></p>
+                                    </div>
+                                </div>
+                                <div class="dbox w-100 d-flex align-items-center">
+                                    <div class="icon d-flex align-items-center justify-content-center">
+                                        <span class="fa fa-globe"></span>
+                                    </div>
+                                    <div class="text pl-3">
+                                        <p><span>Site</span> <a href="https://angolancommunity.org/">angolancommunity.org</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-	</head>
-	<body>
-	<section class="ftco-section">
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-md-12">
-					<div class="wrapper">
-						<div class="row no-gutters">
-							<div class="col-lg-8 col-md-7 order-md-last d-flex align-items-stretch">
-								<div class="contact-wrap w-100 p-md-5 p-4">
-									<h3 class="mb-4">Angolan Community in Washington</h3>
-									<div id="form-message-warning" class="mb-4"></div> 
-				      		<div id="form-message-success" class="mb-4" style="display: none;">
-				            Your message was sent, thank you!
-				      		</div>
-									<form method="POST" id="RegistroForm" name="RegistroForm" class="RegistroForm">
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<label class="label" for="name">Nome Completo</label>
-													<input type="text" class="form-control" name="name" id="name" placeholder="Name">
-												</div>
-											</div>
-											<div class="col-md-6"> 
-												<div class="form-group">
-													<label class="label" for="email">Email Address</label>
-													<input type="email" class="form-control" name="email" id="email" placeholder="Email">
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label class="label" for="birthday">Data de Nascimento</label>
-													<input type="date" class="form-control" name="birthday" id="birthday">
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label class="label" for="telemovel">Numero  de Telemovel</label>
-													<input type="number" class="form-control" name="telemovel" id="telemovel" placeholder="206-###-####">
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label class="label" for="state">Estado</label>
-													<select class="form-control" name="state" id="state">
-														<option value="Washington">Washington</option>
-													</select>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label class="label" for="city">Cidade</label>
-													<select class="form-control" name="city" id="city">
-														<option value="">Select City</option>
-														<option value="Seattle">Seattle</option>
-														<option value="Spokane">Spokane</option>
-														<option value="Tacoma">Tacoma</option>
-														<option value="Vancouver">Vancouver</option>
-														<option value="Bellevue">Bellevue</option>
-														<option value="Kent">Kent</option>
-														<option value="Everett">Everett</option>
-														<option value="Renton">Renton</option>
-														<option value="Yakima">Yakima</option>
-														<option value="Federal Way">Federal Way</option>
-														<option value="Spokane Valley">Spokane Valley</option>
-														<option value="Bellingham">Bellingham</option>
-														<option value="Kennewick">Kennewick</option>
-														<option value="Auburn">Auburn</option>
-														<option value="Pasco">Pasco</option>
-														<option value="Marysville">Marysville</option>
-														<option value="Lakewood">Lakewood</option>
-														<option value="Redmond">Redmond</option>
-														<option value="Shoreline">Shoreline</option>
-														<option value="Richland">Richland</option>
-													</select>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label class="label" for="gender">Gênero</label>
-													<select class="form-control" name="gender" id="gender">
-														<option value="">Selecione o Gênero</option>
-														<option value="Masculino">Masculino</option>
-														<option value="Feminino">Feminino</option>
-														<option value="Outro">Outro</option>
-													</select>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label class="label" for="civil_status">Estado Civil</label>
-													<select class="form-control" name="civil_status" id="civil_status">
-														<option value="">Selecione o Estado Civil</option>
-														<option value="Solteiro(a)">Solteiro(a)</option>
-														<option value="Casado(a)">Casado(a)</option>
-														<option value="Divorciado(a)">Divorciado(a)</option>
-														<option value="Viúvo(a)">Viúvo(a)</option>
-														<option value="Outro">Outro</option>
-													</select>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label class="label" for="imageUpload">Upload de Imagem</label>
-													<input type="file" class="form-control" name="imageUpload" id="imageUpload" accept="image/*">
-												</div>
-											</div>
-											<div class="col-md-12">
-												<div class="form-group">
-													<input type="submit" value="Send Message" class="btn btn-primary">
-													<div class="submitting"></div>
-												</div>
-											</div>
-										</div>
-									</form>
-								</div>
-							</div>
-							<div class="col-lg-4 col-md-5 d-flex align-items-stretch">
-								<div class="info-wrap bg-primary w-100 p-md-5 p-4">
-									<h3>Contato</h3>
-									<p class="mb-4">Estamos abertos para qualquer sugestão ou apenas para uma conversa</p>
-									<div class="dbox w-100 d-flex align-items-start">
-										<div class="icon d-flex align-items-center justify-content-center">
-											<span class="fa fa-map-marker"></span>
-										</div>
-										<div class="text pl-3">
-											<p><span>Endereço:</span>13118 SE 228th Pl Kent WA 98031</p>
-										</div>
-									</div>
-									<div class="dbox w-100 d-flex align-items-center">
-										<div class="icon d-flex align-items-center justify-content-center">
-											<span class="fa fa-phone"></span>
-										</div>
-										<div class="text pl-3">
-											<p><span>Telefone:</span> <a href="tel://1234567920">+1(206) 383-2188</a></p>
-										</div>
-									</div>
-									<div class="dbox w-100 d-flex align-items-center">
-										<div class="icon d-flex align-items-center justify-content-center">
-											<span class="fa fa-paper-plane"></span>
-										</div>
-										<div class="text pl-3">
-											<p><span>Email:</span> <a href="mailto:info@yoursite.com">Info@angolancommunity.org</a></p>
-										</div>
-									</div>
-									<div class="dbox w-100 d-flex align-items-center">
-										<div class="icon d-flex align-items-center justify-content-center">
-											<span class="fa fa-globe"></span>
-										</div>
-										<div class="text pl-3">
-											<p><span>Site</span> <a href="https://angolancommunity.org/">angolancommunity.org</a></p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+<script src="js/jquery.min.js"></script>
+<script src="js/popper.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.validate.min.js"></script>
+<script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-	<script src="js/jquery.min.js"></script>
-    <script src="js/popper.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.validate.min.js"></script>
-    <script src="js/main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+// Add input event listeners for real-time validation
+document.addEventListener('DOMContentLoaded', function() {
+    const inputs = document.querySelectorAll('#RegistroForm input, #RegistroForm select');
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            this.classList.remove('is-invalid');
+            const existingError = this.parentElement.querySelector('.text-danger');
+            if (existingError) existingError.remove();
+            validateField(this);
+        });
+    });
+});
 
-    <script>
-	document.getElementById('RegistroForm').addEventListener('submit', function(e) {
-		e.preventDefault();
-		
-		resetFormErrors();
-	
-		const formData = new FormData(this);
-		let isValid = validateForm(formData);
-	
-		if (!isValid) return;
-	
-		fetch('http://127.0.0.1:8001/api/registro-membro', {
-			method: 'POST',
-			body: formData,
-			credentials: 'same-origin',
-			redirect: 'follow'
-		})
-		.then(response => {
-			// Log the raw response status and headers
-			console.log('Response Status:', response.status);
-			console.log('Response Headers:', response.headers);
+document.getElementById('RegistroForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const submitBtn = document.getElementById('submitBtn');
+    const scrollPosition = window.scrollY;
+    resetFormErrors();
 
-			if (!response.ok) {
-				return response.text().then(text => {
-					throw new Error(`HTTP error! status: ${response.status}, response: ${text}`);
-				});
-			}
-			return response.json();
-		})
-		.then(data => {
-			// Log the parsed JSON data
-			console.log('Parsed Response Data:', data);
+    const formData = new FormData(this);
 
-			if (data && (data.success === true || response.status === 200)) {  // Broader success check
-				console.log('Form submission successful:', {
-					timestamp: new Date().toISOString(),
-					response: data,
-					submittedData: Object.fromEntries(formData)
-				});
-				
-				Swal.fire({
-					icon: 'success',
-					title: 'Sucesso!',
-					text: 'Seu formulário foi enviado com sucesso!',
-					showConfirmButton: false,
-					timer: 2000
-				}).then(() => {
-					document.getElementById('RegistroForm').reset();
-				});
-			} else {
-				console.error('Form validation failed:', {
-					timestamp: new Date().toISOString(),
-					errors: data.errors || 'No error details provided',
-					submittedData: Object.fromEntries(formData)
-				});
-				highlightErrors(data.errors || {});
-				Swal.fire({
-					icon: 'warning',
-					title: 'Atenção',
-					text: 'Houve um problema na validação do formulário. Verifique os campos.',
-				});
-			}
-		})
-		.catch(error => {
-			console.error('Form submission error:', {
-				timestamp: new Date().toISOString(),
-				error: error.message,
-				stack: error.stack,
-				submittedData: Object.fromEntries(formData)
-			});
-			
-			Swal.fire({
-				icon: 'error',
-				title: 'Erro',
-				text: 'Algo deu errado. Por favor, tente novamente.',
-			});
-		});
-	});
-	
-	function validateForm(formData) {
-		let isValid = true;
-	
-		function setError(fieldName, message = "This field is required") {
-			let field = document.getElementById(fieldName);
-			field.classList.add('is-invalid');
-			
-			let errorSpan = document.createElement('div');
-			errorSpan.className = 'text-danger mt-1';
-			errorSpan.innerText = message;
-			field.parentElement.appendChild(errorSpan);
-		}
-	
-		if (!formData.get('name')) setError('name'), isValid = false;
-		if (!formData.get('email') || !validateEmail(formData.get('email'))) setError('email', "Invalid email"), isValid = false;
-		if (!formData.get('birthday')) setError('birthday'), isValid = false;
-		if (!formData.get('telemovel')) setError('telemovel'), isValid = false;
-		if (!formData.get('city')) setError('city'), isValid = false;
-		if (!formData.get('imageUpload') || formData.get('imageUpload').size === 0) setError('imageUpload'), isValid = false;
-	
-		return isValid;
-	}
-	
-	function validateEmail(email) {
-		const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		return re.test(email);
-	}
-	
-	function resetFormErrors() {
-		document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-		document.querySelectorAll('.text-danger').forEach(el => el.remove());
-	}
-	
-	function highlightErrors(errors) {
-		for (let field in errors) {
-			if (errors.hasOwnProperty(field)) {
-				setError(field, errors[field][0]);
-			}
-		}
-	}
-	</script>
-	</body>
+    if (!validateForm(formData)) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Atenção',
+            text: 'Por favor, preencha todos os campos obrigatórios corretamente.',
+        });
+        window.scrollTo(0, scrollPosition);
+        return;
+    }
+
+    // Show loading state
+    submitBtn.classList.add('btn-loading');
+    submitBtn.disabled = true;
+    submitBtn.value = 'Enviando...';
+
+    // Map frontend fields to backend expected names
+    formData.set('nome', formData.get('name'));
+    formData.set('telefone', formData.get('telemovel'));
+    formData.set('data_nascimento', formData.get('birthday'));
+    formData.set('genero', formData.get('gender'));
+    formData.set('estado_civil', formData.get('civil_status'));
+    formData.set('cidade', formData.get('city'));
+    formData.set('estado', formData.get('state'));
+    formData.delete('name');
+    formData.delete('telemovel');
+    formData.delete('birthday');
+    formData.delete('gender');
+    formData.delete('civil_status');
+
+    fetch('http://127.0.0.1:8001/api/sendRegistrationEmail', {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin',
+        redirect: 'follow'
+    })
+    .then(response => {
+        if (!response.ok) {
+            if (response.status === 422) {
+                return response.json().then(data => {
+                    throw { validationErrors: data.errors, message: 'Validation failed' };
+                });
+            }
+            return response.text().then(text => {
+                throw new Error(`HTTP error! status: ${response.status}, response: ${text}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Sucesso!',
+                text: data.message || 'Seu formulário foi enviado com sucesso!',
+                showConfirmButton: false,
+                timer: 2000
+            }).then(() => {
+                document.getElementById('RegistroForm').reset();
+                // Keep button disabled after successful submission
+                submitBtn.value = 'Enviado';
+            });
+        } else {
+            // Reset button if submission fails
+            resetButton(submitBtn);
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção',
+                text: data.message || 'Algo deu errado na resposta do servidor.',
+            });
+        }
+    })
+    .catch(error => {
+        // Reset button on error
+        resetButton(submitBtn);
+        
+        if (error.validationErrors) {
+            highlightErrors(error.validationErrors);
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atenção',
+                text: 'Por favor, corrija os erros no formulário.',
+            });
+            window.scrollTo(0, scrollPosition);
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: error.message || 'Algo deu errado. Tente novamente.',
+            });
+        }
+    });
+});
+
+function resetButton(button) {
+    button.classList.remove('btn-loading');
+    button.disabled = false;
+    button.value = 'Send Message';
+}
+
+function validateField(field) {
+    let isValid = true;
+    let message = '';
+
+    switch(field.id) {
+        case 'email':
+            if (!validateEmail(field.value)) {
+                isValid = false;
+                message = 'Email inválido';
+            }
+            break;
+        case 'telemovel':
+            if (!validatePhone(field.value)) {
+                isValid = false;
+                message = 'Número de telefone inválido (ex: 206-###-####)';
+            }
+            break;
+        case 'birthday':
+            if (!validateDate(field.value)) {
+                isValid = false;
+                message = 'Data inválida ou pessoa menor de idade';
+            }
+            break;
+        case 'name':
+        case 'city':
+        case 'gender':
+        case 'civil_status':
+        case 'state':
+            if (!field.value || field.value.trim() === '') {
+                isValid = false;
+                message = 'Este campo é obrigatório';
+            }
+            break;
+    }
+
+    if (!isValid) {
+        field.classList.add('is-invalid');
+        let errorSpan = document.createElement('div');
+        errorSpan.className = 'text-danger mt-1';
+        errorSpan.innerText = message;
+        field.parentElement.appendChild(errorSpan);
+    }
+
+    return isValid;
+}
+
+function validateForm(formData) {
+    let isValid = true;
+
+    const fields = [
+        { id: 'name', value: formData.get('name') },
+        { id: 'email', value: formData.get('email') },
+        { id: 'birthday', value: formData.get('birthday') },
+        { id: 'telemovel', value: formData.get('telemovel') },
+        { id: 'city', value: formData.get('city') },
+        { id: 'gender', value: formData.get('gender') },
+        { id: 'civil_status', value: formData.get('civil_status') },
+        { id: 'state', value: formData.get('state') }
+    ];
+
+    fields.forEach(field => {
+        const element = document.getElementById(field.id);
+        if (!validateField(element)) {
+            isValid = false;
+        }
+    });
+
+    return isValid;
+}
+
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+function validatePhone(phone) {
+    const re = /^\(?([2-9][0-8][0-9])\)?[-.]?([0-9]{3})[-.]?([0-9]{4})$/;
+    return re.test(phone);
+}
+
+function validateDate(dateStr) {
+    if (!dateStr) return false;
+    
+    const date = new Date(dateStr);
+    const today = new Date();
+    const minAgeDate = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate());
+    
+    return !isNaN(date.getTime()) && date <= minAgeDate;
+}
+
+function resetFormErrors() {
+    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    document.querySelectorAll('.text-danger').forEach(el => el.remove());
+}
+
+function highlightErrors(errors) {
+    const fieldMap = {
+        'nome': 'name',
+        'telefone': 'telemovel',
+        'data_nascimento': 'birthday',
+        'genero': 'gender',
+        'estado_civil': 'civil_status',
+        'cidade': 'city',
+        'email': 'email',
+        'estado': 'state'
+    };
+
+    for (let field in errors) {
+        if (errors.hasOwnProperty(field)) {
+            const frontendField = fieldMap[field] || field;
+            let fieldElement = document.getElementById(frontendField);
+            if (fieldElement) {
+                fieldElement.classList.add('is-invalid');
+                let errorSpan = document.createElement('div');
+                errorSpan.className = 'text-danger mt-1';
+                errorSpan.innerText = errors[field][0];
+                fieldElement.parentElement.appendChild(errorSpan);
+            }
+        }
+    }
+}
+</script>
+</body>
 </html>
