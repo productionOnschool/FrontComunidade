@@ -303,7 +303,7 @@ document.getElementById('RegistroForm').addEventListener('submit', function(e) {
     formData.delete('gender');
     formData.delete('civil_status');
 
-    fetch('http://127.0.0.1:8001/api/sendRegistrationEmail', {
+    fetch('http://ec2-34-204-45-161.compute-1.amazonaws.com/api/sendRegistrationEmail', {
         method: 'POST',
         body: formData,
         credentials: 'same-origin',
