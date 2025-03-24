@@ -61,6 +61,9 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        .input-group.is-invalid .btn {
+            border-color: #dc3545;
+        }
 
         @media (max-width: 767px) {
             .contact-wrap, .info-wrap {
@@ -192,8 +195,8 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label class="label" for="photo">Fotografia *</label>
-                                                <div class="input-group">
-                                                    <input type="file" class="form-control" name="photo" id="photo" style="display: none;" required>
+                                                <div class="input-group" id="photoInputGroup">
+                                                    <input type="file" class="form-control" name="photo" id="photo" style="display: none;">
                                                     <button type="button" class="btn btn-outline-primary" id="chooseFileBtn">Escolher Arquivo</button>
                                                     <button type="button" class="btn btn-outline-primary ml-2" id="takePhotoBtn">Tirar Foto</button>
                                                     <span id="fileName" class="ml-2"></span>
@@ -273,6 +276,9 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.remove('is-invalid');
             const existingError = this.parentElement.querySelector('.text-danger');
             if (existingError) existingError.remove();
+            if (input.id === 'photo') {
+                document.getElementById('photoInputGroup').classList.remove('is-invalid');
+            }
             validateField(this);
         });
     });
@@ -338,7 +344,6 @@ document.getElementById('RegistroForm').addEventListener('submit', function(e) {
     formData.delete('birthday');
     formData.delete('gender');
     formData.delete('civil_status');
-
     fetch('https://montesinai.cloud/api/sendRegistrationEmail', {
         method: 'POST',
         body: formData,
@@ -451,6 +456,9 @@ function validateField(field) {
 
     if (!isValid) {
         field.classList.add('is-invalid');
+        if (field.id === 'photo') {
+            document.getElementById('photoInputGroup').classList.add('is-invalid');
+        }
         let errorSpan = document.createElement('div');
         errorSpan.className = 'text-danger mt-1';
         errorSpan.innerText = message;
@@ -508,6 +516,7 @@ function validateDate(dateStr) {
 function resetFormErrors() {
     document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
     document.querySelectorAll('.text-danger').forEach(el => el.remove());
+    document.getElementById('photoInputGroup').classList.remove('is-invalid');
 }
 
 function highlightErrors(errors) {
@@ -529,6 +538,9 @@ function highlightErrors(errors) {
             let fieldElement = document.getElementById(frontendField);
             if (fieldElement) {
                 fieldElement.classList.add('is-invalid');
+                if (frontendField === 'photo') {
+                    document.getElementById('photoInputGroup').classList.add('is-invalid');
+                }
                 let errorSpan = document.createElement('div');
                 errorSpan.className = 'text-danger mt-1';
                 errorSpan.innerText = errors[field][0];
