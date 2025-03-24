@@ -103,7 +103,7 @@
                                 <div id="form-message-success" class="mb-4" style="display: none;">
                                     Your message was sent, thank you!
                                 </div>
-                                <form method="POST" id="RegistroForm" name="RegistroForm" class="RegistroForm">
+                                <form method="POST" id="RegistroForm" name="RegistroForm" class="RegistroForm" enctype="multipart/form-data">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -191,6 +191,20 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
+                                                <label class="label" for="photo">Fotografia *</label>
+                                                <div class="input-group">
+                                                    <input type="file" class="form-control" name="photo" id="photo" style="display: none;" required>
+                                                    <button type="button" class="btn btn-outline-primary" id="chooseFileBtn">Escolher Arquivo</button>
+                                                    <button type="button" class="btn btn-outline-primary ml-2" id="takePhotoBtn">Tirar Foto</button>
+                                                    <span id="fileName" class="ml-2"></span>
+                                                </div>
+                                                <div id="photoPreview" class="mt-2" style="display: none;">
+                                                    <img id="previewImg" style="max-width: 200px; max-height: 200px;" alt="Preview">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
                                                 <input type="submit" value="Send Message" class="btn btn-primary" id="submitBtn">
                                                 <div class="submitting"></div>
                                             </div>
@@ -252,7 +266,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-// Add input event listeners for real-time validation
 document.addEventListener('DOMContentLoaded', function() {
     const inputs = document.querySelectorAll('#RegistroForm input, #RegistroForm select');
     inputs.forEach(input => {
@@ -262,6 +275,19 @@ document.addEventListener('DOMContentLoaded', function() {
             if (existingError) existingError.remove();
             validateField(this);
         });
+    });
+
+    document.getElementById('chooseFileBtn').addEventListener('click', function() {
+        document.getElementById('photo').click();
+    });
+
+    document.getElementById('takePhotoBtn').addEventListener('click', function() {
+        requestCameraPermission();
+    });
+
+    document.getElementById('photo').addEventListener('change', function(e) {
+        handleFileSelect(e.target.files[0]);
+        validateField(this);
     });
 });
 
@@ -273,6 +299,18 @@ document.getElementById('RegistroForm').addEventListener('submit', function(e) {
     resetFormErrors();
 
     const formData = new FormData(this);
+    const photoInput = document.getElementById('photo');
+
+    if (!photoInput.files || photoInput.files.length === 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Atenção',
+            text: 'É Obrigatório Enviar O Formulário com uma Fotografia',
+        });
+        validateField(photoInput);
+        window.scrollTo(0, scrollPosition);
+        return;
+    }
 
     if (!validateForm(formData)) {
         Swal.fire({
@@ -284,12 +322,10 @@ document.getElementById('RegistroForm').addEventListener('submit', function(e) {
         return;
     }
 
-    // Show loading state
     submitBtn.classList.add('btn-loading');
     submitBtn.disabled = true;
     submitBtn.value = 'Enviando...';
 
-    // Map frontend fields to backend expected names
     formData.set('nome', formData.get('name'));
     formData.set('telefone', formData.get('telemovel'));
     formData.set('data_nascimento', formData.get('birthday'));
@@ -303,7 +339,7 @@ document.getElementById('RegistroForm').addEventListener('submit', function(e) {
     formData.delete('gender');
     formData.delete('civil_status');
 
-    fetch('http://ec2-34-204-45-161.compute-1.amazonaws.com/api/sendRegistrationEmail', {
+    fetch('https://montesinai.cloud/api/sendRegistrationEmail', {
         method: 'POST',
         body: formData,
         credentials: 'same-origin',
@@ -332,11 +368,11 @@ document.getElementById('RegistroForm').addEventListener('submit', function(e) {
                 timer: 2000
             }).then(() => {
                 document.getElementById('RegistroForm').reset();
-                // Keep button disabled after successful submission
+                document.getElementById('photoPreview').style.display = 'none';
+                document.getElementById('fileName').textContent = '';
                 submitBtn.value = 'Enviado';
             });
         } else {
-            // Reset button if submission fails
             resetButton(submitBtn);
             Swal.fire({
                 icon: 'warning',
@@ -346,7 +382,6 @@ document.getElementById('RegistroForm').addEventListener('submit', function(e) {
         }
     })
     .catch(error => {
-        // Reset button on error
         resetButton(submitBtn);
         
         if (error.validationErrors) {
@@ -406,6 +441,12 @@ function validateField(field) {
                 message = 'Este campo é obrigatório';
             }
             break;
+        case 'photo':
+            if (!field.files || field.files.length === 0) {
+                isValid = false;
+                message = 'É Obrigatório Enviar O Formulário com uma Fotografia';
+            }
+            break;
     }
 
     if (!isValid) {
@@ -430,7 +471,8 @@ function validateForm(formData) {
         { id: 'city', value: formData.get('city') },
         { id: 'gender', value: formData.get('gender') },
         { id: 'civil_status', value: formData.get('civil_status') },
-        { id: 'state', value: formData.get('state') }
+        { id: 'state', value: formData.get('state') },
+        { id: 'photo', value: formData.get('photo') }
     ];
 
     fields.forEach(field => {
@@ -477,7 +519,8 @@ function highlightErrors(errors) {
         'estado_civil': 'civil_status',
         'cidade': 'city',
         'email': 'email',
-        'estado': 'state'
+        'estado': 'state',
+        'photo': 'photo'
     };
 
     for (let field in errors) {
@@ -491,6 +534,65 @@ function highlightErrors(errors) {
                 errorSpan.innerText = errors[field][0];
                 fieldElement.parentElement.appendChild(errorSpan);
             }
+        }
+    }
+}
+
+function requestCameraPermission() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            Swal.fire({
+                title: 'Tirar Foto',
+                html: '<video id="video" width="100%" height="auto" autoplay></video><br>' +
+                      '<button id="captureBtn" class="btn btn-primary mt-2">Capturar</button>',
+                showCancelButton: true,
+                showConfirmButton: false,
+                didOpen: () => {
+                    const video = document.getElementById('video');
+                    video.srcObject = stream;
+                    document.getElementById('captureBtn').addEventListener('click', () => captureImage(stream));
+                },
+                willClose: () => {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+            });
+        })
+        .catch(err => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Não foi possível acessar a câmera. Verifique as permissões.'
+            });
+        });
+}
+
+function captureImage(stream) {
+    const video = document.getElementById('video');
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    
+    canvas.toBlob(blob => {
+        const file = new File([blob], 'captured_photo.jpg', { type: 'image/jpeg' });
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        document.getElementById('photo').files = dataTransfer.files;
+        handleFileSelect(file);
+        Swal.close();
+    }, 'image/jpeg');
+}
+
+function handleFileSelect(file) {
+    if (file) {
+        document.getElementById('fileName').textContent = file.name;
+        const preview = document.getElementById('photoPreview');
+        const previewImg = document.getElementById('previewImg');
+        if (file.type.startsWith('image/')) {
+            preview.style.display = 'block';
+            previewImg.src = URL.createObjectURL(file);
+        } else {
+            preview.style.display = 'none';
         }
     }
 }
